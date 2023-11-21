@@ -4,7 +4,7 @@
     {
       "label": "Supabase start",
       "type": "shell",
-      "command": "pnpm run supabase",
+      "command": "pnpm run supabase:start",
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -53,7 +53,8 @@
       "label": "dev",
       "type": "shell",
       "dependsOrder": "parallel",
-      "dependsOn": ["Supabase start", "Next dev", "Stripe listen"]
+      "dependsOn": ["Supabase start", "Next dev", "Stripe listen"],
+      "problemMatcher": []
     }
   ]
 }
