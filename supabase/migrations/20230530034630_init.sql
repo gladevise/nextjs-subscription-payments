@@ -1,4 +1,4 @@
-/** 
+/**
 * USERS
 * Note: This table contains user data. Users should only be able to view and update their own data.
 */
@@ -18,8 +18,9 @@ create policy "Can update own user data." on users for update using (auth.uid() 
 
 /**
 * This trigger automatically creates a user entry when a new user signs up via Supabase Auth.
-*/ 
-create function public.handle_new_user() 
+*/
+drop function if exists public.handle_new_user() cascade;
+create function public.handle_new_user()
 returns trigger as $$
 begin
   insert into public.users (id, full_name, avatar_url)
@@ -44,7 +45,7 @@ create table customers (
 alter table customers enable row level security;
 -- No policies as this is a private table that the user must not have access to.
 
-/** 
+/**
 * PRODUCTS
 * Note: products are created and managed in Stripe and synced to our DB via Stripe webhooks.
 */
@@ -75,7 +76,7 @@ create table prices (
   -- Price ID from Stripe, e.g. price_1234.
   id text primary key,
   -- The ID of the prduct that this price belongs to.
-  product_id text references products, 
+  product_id text references products,
   -- Whether the price can be used for new purchases.
   active boolean,
   -- A brief description of the price.
