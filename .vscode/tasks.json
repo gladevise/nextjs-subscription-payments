@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Supabase start",
+      "type": "shell",
+      "command": "pnpm run supabase",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Next dev",
+      "type": "shell",
+      "command": "pnpm run dev",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Stripe listen",
+      "type": "shell",
+      "command": "/usr/local/bin/stripe listen --forward-to=localhost:3000/api/webhooks",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "dev",
+      "type": "shell",
+      "dependsOrder": "parallel",
+      "dependsOn": ["Supabase start", "Next dev", "Stripe listen"]
+    }
+  ]
+}
