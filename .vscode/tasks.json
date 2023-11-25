@@ -36,7 +36,7 @@
     {
       "label": "Stripe listen",
       "type": "shell",
-      "command": "/usr/local/bin/stripe listen --forward-to=localhost:3000/api/webhooks",
+      "command": "stripe listen --forward-to=localhost:3000/api/webhooks",
       "presentation": {
         "echo": true,
         "reveal": "always",
