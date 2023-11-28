@@ -10,6 +10,8 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks",
+    "stripe:fixtures": "stripe fixtures fixtures/stripe-fixtures.json",
+    "stripe:sync": "bun run ./utils/stripe-sync.ts",
     "generate-types": "npx supabase gen types typescript --local --schema public > types_db.ts"
   },
   "dependencies": {
@@ -31,6 +33,7 @@
     "@types/node": "^20.2.3",
     "@types/react": "^18.2.7",
     "autoprefixer": "^10.4.14",
+    "bun": "^1.0.14",
     "encoding": "^0.1.13",
     "eslint": "^8.41.0",
     "eslint-config-next": "13.4.3",

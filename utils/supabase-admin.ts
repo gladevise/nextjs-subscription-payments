@@ -1,8 +1,8 @@
-import { toDateTime } from './helpers';
-import { stripe } from './stripe';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
+import { toDateTime } from './helpers';
+import { stripe } from './stripe';
 
 type Product = Database['public']['Tables']['products']['Row'];
 type Price = Database['public']['Tables']['prices']['Row'];
@@ -47,6 +47,53 @@ const upsertPriceRecord = async (price: Stripe.Price) => {
   const { error } = await supabaseAdmin.from('prices').upsert([priceData]);
   if (error) throw error;
   console.log(`Price inserted/updated: ${price.id}`);
+};
+
+export const upsertCustomerRecord = async (customer: Stripe.Customer) => {
+  if (customer.id == null) throw new Error('Customer id is required');
+
+  const { data: customerData, error: customerError } = await supabaseAdmin
+    .from('customers')
+    .select('id')
+    .eq('stripe_customer_id', customer.id)
+    .single();
+
+  if (customerError) throw customerError;
+  if (customerData == null) {
+    // stripe上にcustomerが存在するが、supabase上に存在しない場合
+    const { data: userData, error: userError } = await supabaseAdmin
+      .from('auth.users')
+      .select('id')
+      .eq('email', customer.email)
+      .single();
+    if (userError) throw userError;
+    if (userData == null) throw new Error(`User not found: ${customer.email}`);
+    // upsert customers
+    const { error } = await supabaseAdmin
+      .from('customers')
+      .upsert({ id: userData.id, stripe_customer_id: customer.id });
+    if (error) throw error;
+    console.log(`Customer inserted/updated: ${customer.id}`);
+  }
+};
+
+export const upsertSubscriptionRecord = async (
+  subscription: Stripe.Subscription
+) => {
+  // get auth.users.id from customers table
+  const { data: customerData, error: noCustomerError } = await supabaseAdmin
+    .from('customers')
+    .select('id')
+    .eq('stripe_customer_id', subscription.customer)
+    .single();
+
+  if (noCustomerError) throw noCustomerError;
+  if (customerData == null)
+    throw new Error(`Customer not found: ${subscription.customer}`);
+  // const subscriptionData: Database['public']['Tables']['subscriptions']['Insert'] =
+  //   {
+  //     id: customerData.id,
+  //   };
 };
 
 const createOrRetrieveCustomer = async ({
@@ -178,8 +225,8 @@ const manageSubscriptionStatusChange = async (
 };
 
 export {
-  upsertProductRecord,
-  upsertPriceRecord,
   createOrRetrieveCustomer,
-  manageSubscriptionStatusChange
+  manageSubscriptionStatusChange,
+  upsertPriceRecord,
+  upsertProductRecord
 };
