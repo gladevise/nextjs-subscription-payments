@@ -36,18 +36,18 @@ export async function getUserDetails() {
 
 export async function getSubscription() {
   const supabase = createServerSupabaseClient();
-  try {
-    const { data: subscription } = await supabase
-      .from('subscriptions')
-      .select('*, prices(*, products(*))')
-      .in('status', ['trialing', 'active'])
-      .maybeSingle()
-      .throwOnError();
-    return subscription;
-  } catch (error) {
-    console.error('Error:', error);
+  const { data: subscription, error: subscriptionError } = await supabase
+    .from('subscriptions')
+    .select('*, prices(*, products(*))')
+    .in('status', ['trialing', 'active'])
+    .single();
+
+  if (subscriptionError) {
+    console.error('Error:', subscriptionError);
     return null;
   }
+
+  return subscription;
 }
 
 export const getActiveProductsWithPrices = async () => {
