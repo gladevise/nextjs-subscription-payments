@@ -1,0 +1,18 @@
+[build]
+publish = ".next"
+
+[build.environment]
+PNPM_FLAGS = "--shamefully-hoist"
+
+[context.production]
+command = '''\
+echo -e "\nNEXT_PUBLIC_SITE_URL=$URL" >> .env.local
+'''
+
+[context.deploy-preview]
+command = '''\
+echo -e "\nNEXT_PUBLIC_SITE_URL=$DEPLOY_PRIME_URL" >> .env.local
+'''
+
+[[plugins]]
+package = "@netlify/plugin-nextjs"
