@@ -6,12 +6,14 @@ PNPM_FLAGS = "--shamefully-hoist"
 
 [context.production]
 command = '''\
-echo -e "\nNEXT_PUBLIC_SITE_URL=$URL" >> .env.local
+echo -e "\nNEXT_PUBLIC_SITE_URL=$URL" >> .env.local && \
+pnpm run build
 '''
 
 [context.deploy-preview]
 command = '''\
-echo -e "\nNEXT_PUBLIC_SITE_URL=$DEPLOY_PRIME_URL" >> .env.local
+echo -e "\nNEXT_PUBLIC_SITE_URL=$DEPLOY_PRIME_URL" >> .env.local && \
+pnpm run build
 '''
 
 [[plugins]]
